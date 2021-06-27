@@ -1,8 +1,7 @@
-const path = require('path');
 const fs = require('fs');
 const util = require('util');
 
-const db = path.join(__dirname, '..', 'dataBase', 'users.json');
+const { urls } = require('../constants');
 
 const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
@@ -51,16 +50,16 @@ module.exports = {
 };
 
 async function getAllUsers() {
-    const data = await readFile(db);
+    const data = await readFile(urls.DB);
 
     if (!data) {
-        throw new Error(`Can't read ${db} !`);
+        throw new Error(`Can't read ${urls.DB} !`);
     }
     return JSON.parse(data);
 }
 
 async function writeToDB(data) {
-    const err = await writeFile(db, JSON.stringify(data));
+    const err = await writeFile(urls.DB, JSON.stringify(data));
 
     if (err) {
         throw new Error(err);
