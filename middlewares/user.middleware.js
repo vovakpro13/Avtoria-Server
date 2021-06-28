@@ -4,13 +4,7 @@ const { errors } = require('../constants');
 module.exports = {
     chekUserById: async (req, res, next) => {
         try {
-            const thisUser = await userService.getById(req.params.id);
-
-            if (!thisUser) {
-                throw new Error(errors.NOT_EXIST);
-            }
-
-            req.user = thisUser;
+            req.user = await isUserExist(req.params.id);
             next();
         } catch (err) {
             res.json(err.message);
@@ -19,11 +13,7 @@ module.exports = {
 
     chekUserForUpdate: async (req, res, next) => {
         try {
-            const thisUser = await userService.getById(req.body.id);
-
-            if (!thisUser) {
-                throw new Error(errors.NOT_EXIST);
-            }
+            await isUserExist(req.body.id);
 
             next();
         } catch (err) {
@@ -66,3 +56,12 @@ module.exports = {
         }
     },
 };
+
+async function isUserExist(id) {
+    const user = await userService.getById(id)
+    if (!user) {
+        throw new Error(errors.NOT_EXIST);
+    }
+
+    return user;
+}
