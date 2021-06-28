@@ -11,13 +11,12 @@ module.exports = {
 
     getById: async (id) => {
         const users = await getAllUsers();
-        const thisUser = users.find((user) => user.id === +id);
+        return users.find((user) => user.id === +id);
+    },
 
-        if (!thisUser) {
-            throw new Error(`User with id #${id} does not exist!`);
-        }
-
-        return thisUser;
+    getByLogin: async (login) => {
+        const users = await getAllUsers();
+        return users.find((user) => user.login === login);
     },
 
     add: async ({ age, ...user }) => {

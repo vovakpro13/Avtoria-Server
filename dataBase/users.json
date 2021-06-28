@@ -1,1 +1,32 @@
-[{"id":1,"name":"Volodymyr","login":"volodya1_2","age":17},{"name":"FromPostman","login":"postmaaaaan","age":9,"id":1624805909200},{"id":1624808232071,"name":"updated22222","login":"updated227","age":890}]
+[
+  {
+    "id": 1,
+    "name": "Volodymyr",
+    "login": "volodya1_2",
+    "age": 17
+  },
+  {
+    "name": "FromPostman",
+    "login": "postmaaaaan",
+    "age": 9,
+    "id": 1624805909200
+  },
+  {
+    "id": 1624808232071,
+    "name": "45",
+    "login": "88",
+    "age": 890
+  },
+  {
+    "name": "updated22222",
+    "login": "updatmmmmed227",
+    "age": null,
+    "id": 1624891506798
+  },
+  {
+    "name": "updated222jjj22",
+    "login": "88",
+    "age": null,
+    "id": 1624891649531
+  }
+]
