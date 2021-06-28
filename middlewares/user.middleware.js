@@ -58,7 +58,8 @@ module.exports = {
 };
 
 async function isUserExist(id) {
-    const user = await userService.getById(id)
+    const user = await userService.getById(id);
+
     if (!user) {
         throw new Error(errors.NOT_EXIST);
     }
