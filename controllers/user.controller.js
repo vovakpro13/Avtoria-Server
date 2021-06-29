@@ -1,4 +1,3 @@
-const { userService } = require('../services');
 const { dbModels: { User } } = require('../database');
 const { statusCodes } = require('../constants');
 
