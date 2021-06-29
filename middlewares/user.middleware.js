@@ -1,5 +1,13 @@
-const { userService } = require('../services');
-const { errors } = require('../constants');
+const { dbModels: { User } } = require('../database');
+const { ErrorHandler } = require('../errors');
+const {
+    errorMessages: {
+        LOGIN_ALREADY_EXIST,
+        RECORD_NOT_FOUND,
+        BAD_REQUEST_BODY,
+        EMAIL_ALREADY_EXIST
+    }
+} = require('../errors');
 
 module.exports = {
     chekUserById: async (req, res, next) => {
@@ -7,61 +15,84 @@ module.exports = {
             req.user = await isUserExist(req.params.id);
             next();
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 
     chekUserForUpdate: async (req, res, next) => {
         try {
-            await isUserExist(req.body.id);
+            await isUserExist(req.params.id);
 
             next();
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 
     checkBodyForCreate: (req, res, next) => {
-        const requiredKeys = [
+        const allowedKeys = [
             'name',
+            'login',
+            'email',
             'age',
-            'login'
+            'role'
         ];
+
         const bodyKeys = Object.keys(req.body);
 
         try {
-            for (const key of requiredKeys) {
-                if (!bodyKeys.includes(key)) {
-                    throw new Error(`${errors.NOT_HAVE_KEY} '${key}'`);
+            for (const key of bodyKeys) {
+                if (!allowedKeys.includes(key)) {
+                    throw new ErrorHandler(
+                        400,
+                        BAD_REQUEST_BODY.message,
+                        BAD_REQUEST_BODY.code
+                    );
                 }
             }
 
             next();
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 
-    isUserAlreadyExist: async (req, res, next) => {
+    checkUniqueLoginAndEmail: async (req, res, next) => {
         try {
-            const thisUser = await userService.getByLogin(req.body.login);
+            const { login, email } = req.body;
 
-            if (thisUser) {
-                throw new Error(errors.ALREADY_EXIST);
+            const [userWithLogin] = await User.find({ login });
+
+            if (userWithLogin) {
+                throw new ErrorHandler(
+                    409,
+                    LOGIN_ALREADY_EXIST.message,
+                    LOGIN_ALREADY_EXIST.code
+                );
+            }
+
+            const [userWithEmail] = await User.find({ email });
+
+            if (userWithEmail) {
+                throw new ErrorHandler(
+                    409,
+                    EMAIL_ALREADY_EXIST.message,
+                    EMAIL_ALREADY_EXIST.code
+                );
             }
 
             next();
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 };
 
 async function isUserExist(id) {
-    const user = await userService.getById(id);
+    const user = await User.findById(id);
 
     if (!user) {
-        throw new Error(errors.NOT_EXIST);
+        throw new ErrorHandler(404, RECORD_NOT_FOUND.message, RECORD_NOT_FOUND.code);
     }
 
     return user;

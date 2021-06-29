@@ -1,5 +1,5 @@
-const path = require('path');
+require('dotenv').config();
 
 module.exports = {
-    DB: path.join(__dirname, '..', 'dataBase', 'users.json')
+    DB: `mongodb+srv://vovlodya:${process.env.DB_PASSWORD}@mongocluster.nlxbe.mongodb.net/mongoCluster?retryWrites=true&w=majority`
 };

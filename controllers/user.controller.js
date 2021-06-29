@@ -1,48 +1,61 @@
 const { userService } = require('../services');
+const { dbModels: { User } } = require('../database');
+const { statusCodes } = require('../constants');
 
 module.exports = {
-    getAllUsers: async (req, res) => {
+    getAllUsers: async (req, res, next) => {
         try {
-            const users = await userService.getAll();
-            res.json(users);
+            const users = await User.find({});
+            res
+                .status(statusCodes.OK)
+                .json(users);
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 
     getUserById: (req, res) => {
         const { user } = req;
-        res.json(user);
+        res.status(statusCodes.OK).json(user);
     },
 
-    createUser: async (req, res) => {
-        const userData = req.body;
-
+    createUser: async (req, res, next) => {
         try {
-            await userService.add(userData);
-            res.json(`User ${userData.login} success created!`);
+            const user = await User.create(req.body);
+
+            res
+                .status(statusCodes.CREATED)
+                .json({ message: 'User is success created!', user });
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 
-    removeUserById: async (req, res) => {
-        const { id } = await req.params;
+    removeUserById: async (req, res, next) => {
+        const { id } = req.params;
 
         try {
-            await userService.remove(id);
-            res.json(`User ${id} success deleted!`);
+            await User.findByIdAndDelete(id);
+            res
+                .status(statusCodes.DELETED)
+                .json('Deleted')
+                .end();
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 
-    updateUserById: async (req, res) => {
+    updateUserById: async (req, res, next) => {
         try {
-            await userService.update(req.body);
-            res.json(`User #${req.body.id} success updated !`);
+            const { params: { id }, body } = req;
+
+            await User.findByIdAndUpdate(id, body, { runValidators: true, useFindAndModify: false });
+
+            res
+                .status(statusCodes.UPDATED)
+                .json({ message: 'User is success updated !' });
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     }
 };
