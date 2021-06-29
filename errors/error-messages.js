@@ -15,6 +15,7 @@ module.exports = {
         message: 'Email already exist',
         code: 4091
     },
+
     BAD_REQUEST_BODY: {
         message: 'Body has not allowed key',
         code: 4000

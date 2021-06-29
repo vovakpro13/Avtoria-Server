@@ -13,6 +13,7 @@ module.exports = {
     chekUserById: async (req, res, next) => {
         try {
             req.user = await isUserExist(req.params.id);
+
             next();
         } catch (err) {
             next(err);
@@ -30,17 +31,17 @@ module.exports = {
     },
 
     checkBodyForCreate: (req, res, next) => {
-        const allowedKeys = [
-            'name',
-            'login',
-            'email',
-            'age',
-            'role'
-        ];
-
-        const bodyKeys = Object.keys(req.body);
-
         try {
+            const allowedKeys = [
+                'name',
+                'login',
+                'email',
+                'age',
+                'role'
+            ];
+
+            const bodyKeys = Object.keys(req.body);
+
             for (const key of bodyKeys) {
                 if (!allowedKeys.includes(key)) {
                     throw new ErrorHandler(

@@ -31,6 +31,15 @@ const userSchema = new Schema({
         required: false,
         default: 18
     }
-}, { timestamps: true });
+}, {
+    timestamps: true,
+    toJSON: { virtuals: true },
+});
+
+userSchema
+    .virtual('uniqueData')
+    .get(function() {
+        return `${this.email}:${this.login}`;
+    });
 
 module.exports = model(dbTablesEnum.USER, userSchema);

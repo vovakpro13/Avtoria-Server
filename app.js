@@ -1,8 +1,15 @@
 const express = require('express');
 
-const { config } = require('./constants');
+const {
+    config,
+    statusCodes: { BAD_REQUEST },
+    errors: { UNKNOWN_ERROR }
+} = require('./constants');
+const {
+    ErrorHandler,
+    errorMessages: { ROUTE_NOT_FOUND }
+} = require('./errors');
 const { userRouter } = require('./routes');
-const { ErrorHandler, errorMessages: { ROUTE_NOT_FOUND } } = require('./errors');
 
 const app = express();
 
@@ -20,9 +27,9 @@ app.listen(config.PORT, () => {
 // eslint-disable-next-line no-unused-vars
 function _handleErrors(err, req, res, next) {
     res
-        .status(err.status || 400)
+        .status(err.status || BAD_REQUEST)
         .json({
-            message: err.message || 'Unknown error',
+            message: err.message || UNKNOWN_ERROR,
             customCode: err.code || 0
         });
 }

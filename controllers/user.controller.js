@@ -4,7 +4,7 @@ const { statusCodes } = require('../constants');
 module.exports = {
     getAllUsers: async (req, res, next) => {
         try {
-            const users = await User.find({});
+            const users = await User.find({}, {}, { virtuals: true });
             res
                 .status(statusCodes.OK)
                 .json(users);
@@ -31,14 +31,12 @@ module.exports = {
     },
 
     removeUserById: async (req, res, next) => {
-        const { id } = req.params;
-
         try {
+            const { id } = req.params;
+
             await User.findByIdAndDelete(id);
-            res
-                .status(statusCodes.DELETED)
-                .json('Deleted')
-                .end();
+
+            res.sendStatus(204);
         } catch (err) {
             next(err);
         }
