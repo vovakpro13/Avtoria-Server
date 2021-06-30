@@ -1,6 +1,6 @@
 module.exports = {
     OK: 200,
-    UPDATED: 200,
+    UPDATED: 201,
     CREATED: 201,
     DELETED: 204,
     BAD_REQUEST: 400,

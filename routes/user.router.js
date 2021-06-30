@@ -10,8 +10,8 @@ router.get('/:id',
     userController.getUserById);
 
 router.post('/',
-    userMiddleWare.checkUniqueLoginAndEmail,
     userMiddleWare.checkBodyForCreate,
+    userMiddleWare.checkUniqueLoginAndEmail,
     userController.createUser);
 
 router.delete('/:id',
