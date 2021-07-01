@@ -8,6 +8,6 @@ const router = new Router();
 router.post('/',
     authMiddleWare.chekBodyForLogIn,
     authMiddleWare.isLoginOrEmailExist,
-    authController.login);
+    authController.logIn);
 
 module.exports = router;

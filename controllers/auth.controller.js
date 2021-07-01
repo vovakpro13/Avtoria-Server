@@ -2,7 +2,7 @@ const { statusCodes } = require('../constants');
 const { authService } = require('../services');
 
 module.exports = {
-    login: async (req, res, next) => {
+    logIn: async (req, res, next) => {
         try {
             const { body: { password }, user } = req;
 
