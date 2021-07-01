@@ -1,10 +1,12 @@
 const { dbModels: { User } } = require('../database');
 const { ErrorHandler } = require('../errors');
+const { userValidator } = require('../validators');
+const { statusCodes } = require('../constants');
+const { errorsHelper } = require('../helpers');
 const {
     errorMessages: {
         LOGIN_ALREADY_EXIST,
         RECORD_NOT_FOUND,
-        BAD_REQUEST_BODY,
         EMAIL_ALREADY_EXIST
     }
 } = require('../errors');
@@ -12,7 +14,17 @@ const {
 module.exports = {
     chekUserById: async (req, res, next) => {
         try {
-            req.user = await isUserExist(req.params.id);
+            const user = await User.findById(req.params.id);
+
+            if (!user) {
+                throw new ErrorHandler(
+                    statusCodes.NOT_FOUND,
+                    RECORD_NOT_FOUND.message,
+                    RECORD_NOT_FOUND.code
+                );
+            }
+
+            req.user = user;
 
             next();
         } catch (err) {
@@ -20,9 +32,13 @@ module.exports = {
         }
     },
 
-    chekUserForUpdate: async (req, res, next) => {
+    chekBodyForUpdate: (req, res, next) => {
         try {
-            await isUserExist(req.params.id);
+            const { error } = userValidator.updateUserData.validate(req.body);
+
+            if (error) {
+                errorsHelper.throwNotValidBody(error);
+            }
 
             next();
         } catch (err) {
@@ -32,24 +48,10 @@ module.exports = {
 
     checkBodyForCreate: (req, res, next) => {
         try {
-            const allowedKeys = [
-                'name',
-                'login',
-                'email',
-                'age',
-                'role'
-            ];
+            const { error } = userValidator.createUser.validate(req.body);
 
-            const bodyKeys = Object.keys(req.body);
-
-            for (const key of bodyKeys) {
-                if (!allowedKeys.includes(key)) {
-                    throw new ErrorHandler(
-                        400,
-                        BAD_REQUEST_BODY.message,
-                        BAD_REQUEST_BODY.code
-                    );
-                }
+            if (error) {
+                errorsHelper.throwNotValidBody(error);
             }
 
             next();
@@ -66,7 +68,7 @@ module.exports = {
 
             if (userWithLogin) {
                 throw new ErrorHandler(
-                    409,
+                    statusCodes.ALREADY_EXIST,
                     LOGIN_ALREADY_EXIST.message,
                     LOGIN_ALREADY_EXIST.code
                 );
@@ -76,7 +78,7 @@ module.exports = {
 
             if (userWithEmail) {
                 throw new ErrorHandler(
-                    409,
+                    statusCodes.ALREADY_EXIST,
                     EMAIL_ALREADY_EXIST.message,
                     EMAIL_ALREADY_EXIST.code
                 );
@@ -88,13 +90,3 @@ module.exports = {
         }
     },
 };
-
-async function isUserExist(id) {
-    const user = await User.findById(id);
-
-    if (!user) {
-        throw new ErrorHandler(404, RECORD_NOT_FOUND.message, RECORD_NOT_FOUND.code);
-    }
-
-    return user;
-}

@@ -19,7 +19,8 @@ router.delete('/:id',
     userController.removeUserById);
 
 router.put('/:id',
-    userMiddleWare.chekUserForUpdate,
+    userMiddleWare.chekBodyForUpdate,
+    userMiddleWare.chekUserById,
     userController.updateUserById);
 
 module.exports = router;

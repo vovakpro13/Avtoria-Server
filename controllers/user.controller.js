@@ -1,5 +1,6 @@
 const { dbModels: { User } } = require('../database');
 const { statusCodes } = require('../constants');
+const { userService } = require('../services');
 
 module.exports = {
     getAllUsers: async (req, res, next) => {
@@ -20,7 +21,7 @@ module.exports = {
 
     createUser: async (req, res, next) => {
         try {
-            const user = await User.create(req.body);
+            const user = await userService.create(req.body);
 
             res
                 .status(statusCodes.CREATED)
