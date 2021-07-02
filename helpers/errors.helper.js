@@ -1,8 +1,7 @@
 const {
     ErrorHandler,
     errorMessages: {
-        ROUTE_NOT_FOUND,
-        WRONG_EMAIL_OR_PASSWORD
+        ROUTE_NOT_FOUND
     }
 } = require('../errors');
 const { statusCodes, errors } = require('../constants');
