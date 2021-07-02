@@ -64,7 +64,7 @@ module.exports = {
         try {
             const { login, email } = req.body;
 
-            const [userWithLogin] = await User.find({ login });
+            const userWithLogin = await User.findOne({ login });
 
             if (userWithLogin) {
                 throw new ErrorHandler(
@@ -74,7 +74,7 @@ module.exports = {
                 );
             }
 
-            const [userWithEmail] = await User.find({ email });
+            const userWithEmail = await User.findOne({ email });
 
             if (userWithEmail) {
                 throw new ErrorHandler(

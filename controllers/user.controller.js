@@ -1,6 +1,7 @@
 const { dbModels: { User } } = require('../database');
 const { statusCodes } = require('../constants');
-const { userService } = require('../services');
+const { passwordHasher } = require('../helpers');
+const { responceMessages } = require('../constants');
 
 module.exports = {
     getAllUsers: async (req, res, next) => {
@@ -36,11 +37,14 @@ module.exports = {
 
     createUser: async (req, res, next) => {
         try {
-            const user = await userService.create(req.body);
+            const user = req.body;
 
+            user.password = await passwordHasher.hash(user.password);
+
+            const createdUser = await User.create(user);
             res
                 .status(statusCodes.CREATED)
-                .json({ message: 'User is success created!', user });
+                .json({ message: responceMessages.SUCCESS_CREATED, createdUser });
         } catch (err) {
             next(err);
         }
@@ -66,7 +70,7 @@ module.exports = {
 
             res
                 .status(statusCodes.UPDATED)
-                .json({ message: 'User is success updated !' });
+                .json({ message: responceMessages.SUCCESS_UPDATED });
         } catch (err) {
             next(err);
         }

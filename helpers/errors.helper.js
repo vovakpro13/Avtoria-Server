@@ -28,13 +28,5 @@ module.exports = {
             error.details[0].message,
             statusCodes.BAD_REQUEST
         );
-    },
-
-    throwWrongAuthError() {
-        throw new ErrorHandler(
-            statusCodes.BAD_REQUEST,
-            WRONG_EMAIL_OR_PASSWORD.message,
-            WRONG_EMAIL_OR_PASSWORD.code
-        );
     }
 };
