@@ -1,14 +1,15 @@
 const { statusCodes } = require('../constants');
-const { authService } = require('../services');
+const { passwordHasher } = require('../helpers');
 
 module.exports = {
     logIn: async (req, res, next) => {
         try {
             const { body: { password }, user } = req;
 
-            const userData = await authService.login(user, password);
+            await passwordHasher.compare(password, user.password);
 
-            res.status(statusCodes.OK).json(userData);
+            user.password = undefined;
+            res.status(statusCodes.OK).json(user);
         } catch (e) {
             next(e);
         }

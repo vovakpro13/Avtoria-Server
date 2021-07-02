@@ -5,7 +5,22 @@ const { userService } = require('../services');
 module.exports = {
     getAllUsers: async (req, res, next) => {
         try {
-            const users = await User.find({}, {}, { virtuals: true });
+            const { name, ageG, ageL } = req.query;
+            const filter = {};
+
+            if (ageG) {
+                filter.age = { $gte: ageG };
+            }
+
+            if (ageL) {
+                filter.age = { $lte: ageL };
+            }
+
+            if (name) {
+                filter.name = { $regex: name };
+            }
+
+            const users = await User.find(filter);
             res
                 .status(statusCodes.OK)
                 .json(users);
