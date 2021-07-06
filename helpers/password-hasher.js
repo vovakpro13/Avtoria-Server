@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { errorsHelper } = require('./errors.helper');
+const errorsHelper = require('./errors.helper');
 
 class PasswordHasher {
     // eslint-disable-next-line class-methods-use-this

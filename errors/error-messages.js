@@ -29,4 +29,13 @@ module.exports = {
         code: 4001
     },
 
+    PERMISSION_DENIED: {
+        message: 'You havn`t access to this endpoint!',
+        code: 4002
+    },
+
+    UNAUTHORIZED: {
+        message: 'User is not authorized!',
+        code: 401
+    },
 };

@@ -1,26 +1,37 @@
 const router = require('express').Router();
 
+const { userValidator: { updateUserData, createUser } } = require('../validators');
 const { userController } = require('../controllers');
-const { userMiddleWare } = require('../middlewares');
+const { userMiddleWare, wareGenerator, authMiddleWare } = require('../middlewares');
+const {
+    userRolesEnum,
+    dynamicParams: {
+        PARAM_NAMES, REQUEST_OBJECTS, DB_KEYS
+    }
+} = require('../constants');
 
 router.get('/', userController.getAllUsers);
 
-router.get('/:id',
-    userMiddleWare.chekUserById,
-    userController.getUserById);
-
 router.post('/',
-    userMiddleWare.checkBodyForCreate,
+    wareGenerator.chekBodyValid(createUser),
     userMiddleWare.checkUniqueLoginAndEmail,
     userController.createUser);
 
-router.delete('/:id',
-    userMiddleWare.chekUserById,
-    userController.removeUserById);
+router.put('/:id', wareGenerator.chekBodyValid(updateUserData));
 
-router.put('/:id',
-    userMiddleWare.chekBodyForUpdate,
-    userMiddleWare.chekUserById,
-    userController.updateUserById);
+router.use('/:id', wareGenerator.chekRecordByDynamicParam(PARAM_NAMES.ID, REQUEST_OBJECTS.PARAMS, DB_KEYS.ID));
+
+router.get('/:id', userController.getUserById);
+
+router.use('/:id', authMiddleWare.checkToken());
+
+router.use(userMiddleWare.checkUserRole([
+    userRolesEnum.USER,
+    userRolesEnum.ADMIN
+]));
+
+router.route('/:id')
+    .delete(userController.removeUserById)
+    .put(userController.updateUserById);
 
 module.exports = router;

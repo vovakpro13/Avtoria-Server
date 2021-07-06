@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const { urls } = require('../constants');
+const { config } = require('../constants');
 
 mongoose.connect(
-    urls.DB,
+    config.DB_URL,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true,

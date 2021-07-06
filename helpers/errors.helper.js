@@ -1,7 +1,10 @@
 const {
     ErrorHandler,
     errorMessages: {
-        ROUTE_NOT_FOUND
+        ROUTE_NOT_FOUND,
+        WRONG_EMAIL_OR_PASSWORD,
+        UNAUTHORIZED,
+        PERMISSION_DENIED
     }
 } = require('../errors');
 const { statusCodes, errors } = require('../constants');
@@ -21,11 +24,23 @@ module.exports = {
             });
     },
 
-    throwNotValidBody(error) {
+    throwWrongAuthError() {
         throw new ErrorHandler(
             statusCodes.BAD_REQUEST,
-            error.details[0].message,
-            statusCodes.BAD_REQUEST
+            WRONG_EMAIL_OR_PASSWORD.message,
+            WRONG_EMAIL_OR_PASSWORD.code
+        );
+    },
+
+    throwUnauthorized() {
+        throw new ErrorHandler(statusCodes.UNAUTHORIZED, UNAUTHORIZED.message, UNAUTHORIZED.code);
+    },
+
+    throwPermissionDenied() {
+        throw new ErrorHandler(
+            statusCodes.BAD_REQUEST,
+            PERMISSION_DENIED.message,
+            PERMISSION_DENIED.code
         );
     }
 };

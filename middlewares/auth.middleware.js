@@ -1,5 +1,6 @@
-const { statusCodes } = require('../constants');
-const { ErrorHandler, errorMessages: { WRONG_EMAIL_OR_PASSWORD } } = require('../errors');
+const { dbModels: { Token } } = require('../database');
+const { tokenService } = require('../services');
+const { config } = require('../constants');
 const { dbModels: { User } } = require('../database');
 const { authValidator } = require('../validators');
 const { errorsHelper } = require('../helpers');
@@ -19,11 +20,7 @@ module.exports = {
                 .select('+password');
 
             if (!user) {
-                throw new ErrorHandler(
-                    statusCodes.BAD_REQUEST,
-                    WRONG_EMAIL_OR_PASSWORD.message,
-                    WRONG_EMAIL_OR_PASSWORD.code
-                );
+                errorsHelper.throwWrongAuthError();
             }
 
             req.user = user;
@@ -40,6 +37,36 @@ module.exports = {
             if (error) {
                 errorsHelper.throwNotValidBody(error);
             }
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    checkToken: (type = 'access') => async (req, res, next) => {
+        try {
+            const { id } = req.params;
+
+            const token = req.get(config.AUTHORIZATION);
+
+            if (!token) {
+                errorsHelper.throwUnauthorized();
+            }
+
+            await tokenService.verifyToken(token, type);
+
+            const foundToken = await Token.findOne({ [type === 'access' ? 'accessToken' : 'refreshToken']: token });
+
+            if (!foundToken) {
+                errorsHelper.throwUnauthorized();
+            }
+
+            if (id && foundToken.user.id !== id) {
+                errorsHelper.throwPermissionDenied();
+            }
+
+            req.user = foundToken.user;
 
             next();
         } catch (e) {

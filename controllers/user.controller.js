@@ -31,8 +31,8 @@ module.exports = {
     },
 
     getUserById: (req, res) => {
-        const { user } = req;
-        res.status(statusCodes.OK).json(user);
+        const { record } = req;
+        res.status(statusCodes.OK).json(record);
     },
 
     createUser: async (req, res, next) => {
