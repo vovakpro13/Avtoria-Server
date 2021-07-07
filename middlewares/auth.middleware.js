@@ -1,6 +1,10 @@
 const { dbModels: { Token } } = require('../database');
 const { tokenService } = require('../services');
-const { config } = require('../constants');
+const {
+    config: {
+        AUTHORIZATION, ACCESS_TOKEN, ACCESS, REFRESH_TOKEN
+    }
+} = require('../constants');
 const { dbModels: { User } } = require('../database');
 const { authValidator } = require('../validators');
 const { errorsHelper } = require('../helpers');
@@ -48,7 +52,7 @@ module.exports = {
         try {
             const { id } = req.params;
 
-            const token = req.get(config.AUTHORIZATION);
+            const token = req.get(AUTHORIZATION);
 
             if (!token) {
                 errorsHelper.throwUnauthorized();
@@ -56,7 +60,7 @@ module.exports = {
 
             await tokenService.verifyToken(token, type);
 
-            const foundToken = await Token.findOne({ [type === 'access' ? 'accessToken' : 'refreshToken']: token });
+            const foundToken = await Token.findOne({ [type === ACCESS ? ACCESS_TOKEN : REFRESH_TOKEN]: token });
 
             if (!foundToken) {
                 errorsHelper.throwUnauthorized();

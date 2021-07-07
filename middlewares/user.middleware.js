@@ -1,5 +1,5 @@
 const { dbModels: { User } } = require('../database');
-const { ErrorHandler, errorMessages: { PERMISSION_DENIED } } = require('../errors');
+const { ErrorHandler } = require('../errors');
 const { statusCodes } = require('../constants');
 const { errorsHelper } = require('../helpers');
 const {
