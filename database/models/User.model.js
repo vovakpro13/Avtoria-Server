@@ -30,6 +30,15 @@ const userSchema = new Schema({
     age: {
         type: Number,
         required: true,
+    },
+    isActivated: {
+        type: Boolean,
+        default: false,
+    },
+    activationCode: {
+        type: String,
+        select: false,
+        required: true
     }
 }, {
     timestamps: true,

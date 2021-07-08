@@ -1,14 +1,18 @@
 const jwt = require('jsonwebtoken');
+
 const { promisify } = require('util');
+const { dbModels: { Token } } = require('../database');
 const {
-    config:
+    authKeywords:
         {
-            ACCESS_TOKEN_SECRET,
-            REFRESH_TOKEN_SECRET,
             ACCESS_TOKEN_LIFE_TIME,
             REFRESH_TOKEN_LIFE_TIME,
             ACCESS
-        }
+        },
+    config: {
+        ACCESS_TOKEN_SECRET,
+        REFRESH_TOKEN_SECRET,
+    }
 } = require('../constants');
 
 const verifyToken = promisify(jwt.verify);
@@ -28,5 +32,9 @@ module.exports = {
         const secret = type === 'access' ? ACCESS_TOKEN_SECRET : REFRESH_TOKEN_SECRET;
 
         await verifyToken(token, secret);
-    }
+    },
+
+    deleteAllTokensForUser: async (userId) => {
+        await Token.deleteMany({ user: userId });
+    },
 };

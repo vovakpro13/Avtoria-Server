@@ -1,12 +1,19 @@
-const tokenService = require('./token.service');
+const { generateTokens } = require('./token.service');
 const { dbModels: { Token } } = require('../database');
+const { authKeywords: { CREATE_TOKENS, REWRITE_TOKENS } } = require('../constants');
 
 module.exports = {
-    createTokens: async (userId) => {
-        const tokens = tokenService.generateTokens();
+    [CREATE_TOKENS]: async (userId) => {
+        const tokens = generateTokens();
 
-        await Token.deleteMany({ user: userId });
-        await Token.create({ user: userId, ...tokens });
+        await Token.create({ ...tokens, user: userId });
+
+        return tokens;
+    },
+    [REWRITE_TOKENS]: async (userId) => {
+        const tokens = generateTokens();
+
+        await Token.updateOne({ user: userId }, { ...tokens });
 
         return tokens;
     }

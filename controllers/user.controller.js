@@ -1,7 +1,16 @@
+const { v4: uuidv4 } = require('uuid');
+
+const { mailService: { sendMessage }, tokenService: { deleteAllTokensForUser } } = require('../services');
 const { dbModels: { User } } = require('../database');
-const { statusCodes } = require('../constants');
+const {
+    statusCodes, emailActions: {
+        WELCOME, USER_DATA_UPDATED, ACCOUNT_DELETED, EMAIL_ACTIVATION
+    }
+} = require('../constants');
 const { passwordHasher } = require('../helpers');
-const { responceMessages } = require('../constants');
+const {
+    responceMessages, frontendEndpoints: { REGISTRATION }, serverEndpoints: { ACTIVATION }
+} = require('../constants');
 
 module.exports = {
     getAllUsers: async (req, res, next) => {
@@ -39,9 +48,16 @@ module.exports = {
         try {
             const user = req.body;
 
-            user.password = await passwordHasher.hash(user.password);
+            const password = await passwordHasher.hash(user.password);
+            const activationCode = uuidv4();
 
-            const createdUser = await User.create(user);
+            const createdUser = await User.create({ ...user, password, activationCode });
+
+            const { name, email } = createdUser;
+
+            await sendMessage(email, WELCOME, { name });
+            await sendMessage(email, EMAIL_ACTIVATION, { name, activationLink: `${ACTIVATION}/${activationCode}` });
+
             res
                 .status(statusCodes.CREATED)
                 .json({ message: responceMessages.SUCCESS_CREATED, createdUser });
@@ -54,7 +70,10 @@ module.exports = {
         try {
             const { id } = req.params;
 
-            await User.findByIdAndDelete(id);
+            const { email, name } = await User.findByIdAndDelete(id);
+
+            await sendMessage(email, ACCOUNT_DELETED, { name, registerLink: REGISTRATION });
+            await deleteAllTokensForUser(id);
 
             res.sendStatus(statusCodes.DELETED);
         } catch (err) {
@@ -66,7 +85,13 @@ module.exports = {
         try {
             const { params: { id }, body } = req;
 
-            await User.findByIdAndUpdate(id, body, { runValidators: true, useFindAndModify: false });
+            const { email } = await User.findByIdAndUpdate(id, body, {
+                new: true,
+                runValidators: true,
+                useFindAndModify: false
+            });
+
+            await sendMessage(email, USER_DATA_UPDATED, { updatedData: Object.entries(body) });
 
             res
                 .status(statusCodes.UPDATED)

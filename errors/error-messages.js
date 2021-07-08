@@ -38,4 +38,8 @@ module.exports = {
         message: 'User is not authorized!',
         code: 401
     },
+    WRONG_EMAIL_TEMPLATE: {
+        message: 'Email template is wrong!',
+        code: 5000
+    },
 };

@@ -1,0 +1,11 @@
+extends index
+block variables
+    - const headerTitle = title
+block content
+    div.padding20
+        div
+            | Hi, #{ name }. You updated that kind of data:
+        br
+        ul
+            each val in updatedData
+                li= val[0] + ' = ' + val[1]

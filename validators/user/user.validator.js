@@ -13,6 +13,6 @@ module.exports = {
         age: userKeys.age.required()
     }),
 
-    updateUserData: Joi.object().keys(userKeys),
+    updateUserData: Joi.object().keys(userKeys).min(1),
 
 };

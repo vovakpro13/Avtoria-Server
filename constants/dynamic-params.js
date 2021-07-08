@@ -1,6 +1,7 @@
 module.exports = {
     PARAM_NAMES: {
         ID: 'id',
+        LINK: 'link'
     },
     REQUEST_OBJECTS: {
         PARAMS: 'params',
@@ -9,6 +10,7 @@ module.exports = {
     },
 
     DB_KEYS: {
-        ID: '_id'
+        ID: '_id',
+        ACTIVATION_CODE: 'activationCode'
     },
 };

@@ -1,7 +1,7 @@
 const { dbModels: { Token } } = require('../database');
 const { tokenService } = require('../services');
 const {
-    config: {
+    authKeywords: {
         AUTHORIZATION, ACCESS_TOKEN, ACCESS, REFRESH_TOKEN
     }
 } = require('../constants');
