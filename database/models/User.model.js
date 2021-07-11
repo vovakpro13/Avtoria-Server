@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Types, Schema, model } = require('mongoose');
 
 const { userRolesEnum, dbTablesEnum } = require('../../constants');
 
@@ -7,6 +7,10 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+    avatars: [{
+        type: Types.ObjectId,
+        ref: dbTablesEnum.AVATAR
+    }],
     login: {
         type: String,
         required: true,
@@ -42,13 +46,13 @@ const userSchema = new Schema({
     }
 }, {
     timestamps: true,
-    toJSON: { virtuals: true },
 });
 
-userSchema
-    .virtual('uniqueData')
-    .get(function() {
-        return `${this.email}:${this.login}`;
-    });
+userSchema.pre('find', _populateAvatars);
+userSchema.pre('findOne', _populateAvatars);
+
+function _populateAvatars() {
+    this.populate('avatars');
+}
 
 module.exports = model(dbTablesEnum.USER, userSchema);

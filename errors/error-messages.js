@@ -34,10 +34,21 @@ module.exports = {
         code: 4002
     },
 
+    BIG_FILE_SIZE: {
+        message: 'The file has very big size ',
+        code: 4003
+    },
+
+    NOT_ALLOWED_FILE_TYPE: {
+        message: 'The file type is not allowed! ',
+        code: 4004
+    },
+
     UNAUTHORIZED: {
         message: 'User is not authorized!',
         code: 401
     },
+
     WRONG_EMAIL_TEMPLATE: {
         message: 'Email template is wrong!',
         code: 5000

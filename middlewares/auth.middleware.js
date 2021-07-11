@@ -3,7 +3,8 @@ const { tokenService } = require('../services');
 const {
     authKeywords: {
         AUTHORIZATION, ACCESS_TOKEN, ACCESS, REFRESH_TOKEN
-    }
+    },
+    userRolesEnum: { ADMIN }
 } = require('../constants');
 const { dbModels: { User } } = require('../database');
 const { authValidator } = require('../validators');
@@ -66,7 +67,7 @@ module.exports = {
                 errorsHelper.throwUnauthorized();
             }
 
-            if (id && foundToken.user.id !== id) {
+            if (id && foundToken.user.id !== id && foundToken.user.role !== ADMIN) {
                 errorsHelper.throwPermissionDenied();
             }
 

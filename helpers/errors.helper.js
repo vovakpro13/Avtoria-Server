@@ -4,7 +4,8 @@ const {
         ROUTE_NOT_FOUND,
         WRONG_EMAIL_OR_PASSWORD,
         UNAUTHORIZED,
-        PERMISSION_DENIED
+        PERMISSION_DENIED,
+        BIG_FILE_SIZE
     }
 } = require('../errors');
 const { statusCodes, errors } = require('../constants');
@@ -41,6 +42,22 @@ module.exports = {
             statusCodes.BAD_REQUEST,
             PERMISSION_DENIED.message,
             PERMISSION_DENIED.code
+        );
+    },
+
+    throwBigFileSize(fileName, maxSize) {
+        throw new ErrorHandler(
+            statusCodes.BAD_REQUEST,
+            `${BIG_FILE_SIZE.message} '${fileName}', max size: ${maxSize / 1024 / 1024} mb`,
+            BIG_FILE_SIZE.code
+        );
+    },
+
+    throwNotValidRequestBody(message) {
+        throw new ErrorHandler(
+            statusCodes.BAD_REQUEST,
+            message,
+            statusCodes.BAD_REQUEST
         );
     }
 };

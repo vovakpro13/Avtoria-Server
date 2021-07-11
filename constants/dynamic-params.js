@@ -11,6 +11,6 @@ module.exports = {
 
     DB_KEYS: {
         ID: '_id',
-        ACTIVATION_CODE: 'activationCode'
+        ACTIVATION_CODE: 'activationCode',
     },
 };

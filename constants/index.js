@@ -11,3 +11,6 @@ module.exports.mailKeywords = require('./mail-keywords');
 module.exports.emailActions = require('./email-actions');
 module.exports.frontendEndpoints = require('./frontend-endpoints');
 module.exports.serverEndpoints = require('./server-endpoints');
+module.exports.mimetypes = require('./mimetypes');
+module.exports.carConstants = require('./car');
+module.exports.staticDirNames = require('./static-dir-names');

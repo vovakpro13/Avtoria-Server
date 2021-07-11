@@ -8,14 +8,14 @@ const {
     dynamicParams: {
         DB_KEYS: { ACTIVATION_CODE },
         PARAM_NAMES: { LINK },
-        REQUEST_OBJECTS: { PARAMS }
+        REQUEST_OBJECTS
     }
 } = require('../constants');
 
 const router = new Router();
 
 router.post('/',
-    wareGenerator.chekBodyValid(logIn),
+    wareGenerator.chekRequestValid(REQUEST_OBJECTS.BODY, logIn),
     authMiddleWare.isLoginOrEmailExist,
     authController.logIn);
 
@@ -28,7 +28,7 @@ router.post('/refresh',
     authController.refresh);
 
 router.get('/activate/:link',
-    wareGenerator.chekRecordByDynamicParam(LINK, PARAMS, ACTIVATION_CODE),
+    wareGenerator.chekRecordByDynamicParam(LINK, REQUEST_OBJECTS.PARAMS, ACTIVATION_CODE),
     authController.activate);
 
 module.exports = router;

@@ -14,5 +14,4 @@ module.exports = {
     }),
 
     updateUserData: Joi.object().keys(userKeys).min(1),
-
 };

@@ -1,11 +1,12 @@
 const { dbModels: { User } } = require('../database');
-const { ErrorHandler } = require('../errors');
-const { statusCodes } = require('../constants');
 const {
+    ErrorHandler,
     errorMessages: {
         RECORD_NOT_FOUND,
     }
 } = require('../errors');
+const { statusCodes } = require('../constants');
+const { errorsHelper } = require('../helpers');
 
 module.exports = {
     chekRecordByDynamicParam: (paramName, object = 'body', dbKey = paramName, model = User) => async (req, res, next) => {
@@ -30,16 +31,12 @@ module.exports = {
         }
     },
 
-    chekBodyValid: (validator) => (req, res, next) => {
+    chekRequestValid: (requestObject, validator) => (req, res, next) => {
         try {
-            const { error } = validator.validate(req.body);
+            const { error } = validator.validate(req[requestObject]);
 
             if (error) {
-                throw new ErrorHandler(
-                    statusCodes.BAD_REQUEST,
-                    error.details[0].message,
-                    statusCodes.BAD_REQUEST
-                );
+                errorsHelper.throwNotValidRequestBody(error.details[0].message);
             }
 
             next();

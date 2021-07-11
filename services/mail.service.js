@@ -24,15 +24,17 @@ const htmlParser = new Email({
 
 module.exports = {
     sendMessage: async (to, action, locals = {}) => {
-        const { template, subject } = templateInfo[action];
+        const templateObject = templateInfo[action];
 
-        if (!template) {
+        if (!templateObject) {
             throw new ErrorHandler(
                 statusCodes.NOT_FOUND,
                 WRONG_EMAIL_TEMPLATE.message,
                 WRONG_EMAIL_TEMPLATE.code
             );
         }
+
+        const { template, subject } = templateObject;
 
         const html = await htmlParser.render(template, { ...locals, title: subject });
 

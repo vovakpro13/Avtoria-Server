@@ -1,16 +1,28 @@
 const { v4: uuidv4 } = require('uuid');
 
-const { mailService: { sendMessage }, tokenService: { deleteAllTokensForUser } } = require('../services');
+const {
+    mailService: { sendMessage },
+    tokenService: { deleteAllTokensForUser },
+    carService: { getCars },
+    userService: { pushNewAvatar }
+} = require('../services');
+const {
+    statusCodes,
+    responceMessages,
+    emailActions: {
+        WELCOME,
+        USER_DATA_UPDATED,
+        ACCOUNT_DELETED,
+        EMAIL_ACTIVATION
+    },
+    frontendEndpoints: { REGISTRATION },
+    serverEndpoints: { ACTIVATION }
+} = require('../constants');
+const {
+    passwordHasher,
+    dataNormalizators: { userNormalize }
+} = require('../helpers');
 const { dbModels: { User } } = require('../database');
-const {
-    statusCodes, emailActions: {
-        WELCOME, USER_DATA_UPDATED, ACCOUNT_DELETED, EMAIL_ACTIVATION
-    }
-} = require('../constants');
-const { passwordHasher } = require('../helpers');
-const {
-    responceMessages, frontendEndpoints: { REGISTRATION }, serverEndpoints: { ACTIVATION }
-} = require('../constants');
 
 module.exports = {
     getAllUsers: async (req, res, next) => {
@@ -40,23 +52,45 @@ module.exports = {
     },
 
     getUserById: (req, res) => {
-        const { record } = req;
-        res.status(statusCodes.OK).json(record);
+        const { record: user } = req;
+
+        res
+            .status(statusCodes.OK)
+            .json(user);
+    },
+
+    getUserCars: async (req, res) => {
+        const { record: user } = req;
+
+        const cars = await getCars({ ownerId: user.id });
+
+        res
+            .status(statusCodes.OK)
+            .json(cars);
     },
 
     createUser: async (req, res, next) => {
         try {
-            const user = req.body;
+            const { body: user, avatar } = req;
 
             const password = await passwordHasher.hash(user.password);
             const activationCode = uuidv4();
 
             const createdUser = await User.create({ ...user, password, activationCode });
 
-            const { name, email } = createdUser;
+            const { id, name, email } = createdUser;
 
             await sendMessage(email, WELCOME, { name });
             await sendMessage(email, EMAIL_ACTIVATION, { name, activationLink: `${ACTIVATION}/${activationCode}` });
+
+            if (avatar) {
+                const { avatarId } = await pushNewAvatar(id, avatar);
+
+                createdUser.avatars = [avatarId];
+                await createdUser.save();
+            }
+
+            userNormalize(createdUser);
 
             res
                 .status(statusCodes.CREATED)
@@ -99,5 +133,27 @@ module.exports = {
         } catch (err) {
             next(err);
         }
-    }
+    },
+
+    addNewAvatars: async (req, res, next) => {
+        try {
+            const { images, params: { id } } = req;
+            const avatarsId = [];
+
+            for (const avatar of images) {
+                // eslint-disable-next-line no-await-in-loop
+                const { avatarId } = await pushNewAvatar(id, avatar);
+
+                avatarsId.push(avatarId);
+            }
+
+            await User.findByIdAndUpdate(id, { $push: { avatars: { $each: [...avatarsId] } } });
+
+            res
+                .status(statusCodes.UPDATED)
+                .json({ message: responceMessages.SUCCESS_UPDATED });
+        } catch (err) {
+            next(err);
+        }
+    },
 };

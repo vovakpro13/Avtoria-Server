@@ -11,6 +11,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/email-templates": "^8.0.3",
+    "@types/mongoose": "^5.11.97",
     "@types/nodemailer": "^6.4.3",
     "eslint": "^7.14.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -33,10 +34,12 @@
     }
   },
   "dependencies": {
+    "aws-sdk": "^2.943.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "email-templates": "^8.0.7",
     "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.0",
