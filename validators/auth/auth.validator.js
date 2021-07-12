@@ -12,9 +12,8 @@ module.exports = {
     }),
 
     recoveryBody: Joi.object().keys({
-        email: Joi.string().regex(regexp.EMAIL),
-        code: Joi.number().max(99999)
-            .when('email', { is: null, then: Joi.required() }),
+        email: Joi.string().regex(regexp.EMAIL).required(),
+        code: Joi.number().max(99999),
         newPassword: Joi.string().regex(regexp.PASSWORD).max(200)
             .when('code', { is: Joi.exist(), then: Joi.required() })
     })
