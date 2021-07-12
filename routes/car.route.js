@@ -10,13 +10,14 @@ const {
     }
 } = require('../constants');
 
-router.use('/:id', chekRecordByDynamicParam(PARAM_NAMES.ID, REQUEST_OBJECTS.PARAMS, DB_KEYS.ID, Car));
+router
+    .use('/:id', chekRecordByDynamicParam(PARAM_NAMES.ID, REQUEST_OBJECTS.PARAMS, DB_KEYS.ID, Car))
+    .get('/', carController.getAll)
+    .get('/:id', carController.getById);
 
-router.get('/', carController.getAll);
-router.get('/:id', carController.getById);
-
-router.post('/', chekRequestValid(REQUEST_OBJECTS.BODY, createBody));
-router.patch('/:id/:newAdStatus', chekRequestValid(REQUEST_OBJECTS.PARAMS, newStatus));
+router
+    .post('/', chekRequestValid(REQUEST_OBJECTS.BODY, createBody))
+    .patch('/:id/:newAdStatus', chekRequestValid(REQUEST_OBJECTS.PARAMS, newStatus));
 
 router
     .use(authMiddleWare.checkToken())

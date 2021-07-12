@@ -13,24 +13,23 @@ const {
     config: { MAX_AVATAR_UPLOAD_COUNT }
 } = require('../constants');
 
-router.get('/', userController.getAllUsers);
+router
+    .use('/:id', wareGenerator.chekRecordByDynamicParam(PARAM_NAMES.ID, REQUEST_OBJECTS.PARAMS, DB_KEYS.ID))
+    .get('/', userController.getAllUsers)
+    .get('/:id', userController.getUserById)
+    .get('/:id/cars', userController.getUserCars)
+    .post('/',
+        wareGenerator.chekRequestValid(REQUEST_OBJECTS.BODY, createUser),
+        fileMiddleware.checkFiles,
+        fileMiddleware.checkAvatarValid,
+        userMiddleWare.checkUniqueLoginAndEmail,
+        userController.createUser);
 
-router.post('/',
-    wareGenerator.chekRequestValid(REQUEST_OBJECTS.BODY, createUser),
-    fileMiddleware.checkFiles,
-    fileMiddleware.checkAvatarValid,
-    userMiddleWare.checkUniqueLoginAndEmail,
-    userController.createUser);
-
-router.put('/:id', wareGenerator.chekRequestValid(REQUEST_OBJECTS.BODY, updateUserData));
-router.post('/:id/addAvatars',
-    fileMiddleware.checkFiles,
-    fileMiddleware.maxFilesCount(IMAGES, MAX_AVATAR_UPLOAD_COUNT));
-
-router.use('/:id', wareGenerator.chekRecordByDynamicParam(PARAM_NAMES.ID, REQUEST_OBJECTS.PARAMS, DB_KEYS.ID));
-
-router.get('/:id', userController.getUserById);
-router.get('/:id/cars', userController.getUserCars);
+router
+    .put('/:id', wareGenerator.chekRequestValid(REQUEST_OBJECTS.BODY, updateUserData))
+    .post('/:id/addAvatars',
+        fileMiddleware.checkFiles,
+        fileMiddleware.maxFilesCount(IMAGES, MAX_AVATAR_UPLOAD_COUNT));
 
 router
     .use('/:id', authMiddleWare.checkToken())
