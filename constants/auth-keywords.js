@@ -7,5 +7,6 @@ module.exports = {
     ACCESS_TOKEN: 'accessToken',
     REFRESH_TOKEN: 'refreshToken',
     REWRITE_TOKENS: 'rewriteTokens',
-    CREATE_TOKENS: 'createTokens'
+    CREATE_TOKENS: 'createTokens',
+    RECOVERY_CODE: 'recoveryCode'
 };

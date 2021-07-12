@@ -1,7 +1,8 @@
 module.exports = {
     PARAM_NAMES: {
         ID: 'id',
-        LINK: 'link'
+        LINK: 'link',
+        EMAIL: 'email'
     },
     REQUEST_OBJECTS: {
         PARAMS: 'params',

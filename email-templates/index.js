@@ -1,6 +1,10 @@
 const {
     emailActions: {
-        WELCOME, USER_DATA_UPDATED, ACCOUNT_DELETED, EMAIL_ACTIVATION
+        WELCOME,
+        USER_DATA_UPDATED,
+        ACCOUNT_DELETED,
+        EMAIL_ACTIVATION,
+        PASSWORD_RECOVERY
     }
 } = require('../constants');
 
@@ -20,5 +24,13 @@ module.exports = {
     [EMAIL_ACTIVATION]: {
         template: 'activation',
         subject: 'Email activation'
+    },
+    [EMAIL_ACTIVATION]: {
+        template: 'activation',
+        subject: 'Email activation'
+    },
+    [PASSWORD_RECOVERY]: {
+        template: 'recovery',
+        subject: 'Password recovery'
     },
 };

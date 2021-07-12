@@ -3,4 +3,5 @@ module.exports = {
     USER_DATA_UPDATED: 'updated',
     ACCOUNT_DELETED: 'deleted',
     EMAIL_ACTIVATION: 'activation',
+    PASSWORD_RECOVERY: 'password-recovery'
 };

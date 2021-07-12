@@ -44,6 +44,16 @@ module.exports = {
         code: 4004
     },
 
+    NOT_CORRECT_RECOVERY_CODE: {
+        message: 'The recovery code is not correct!',
+        code: 4005
+    },
+
+    USER_HAS_NOT_RECOVERY_CODE: {
+        message: 'The user didn`t try to reset the password!',
+        code: 4006
+    },
+
     UNAUTHORIZED: {
         message: 'User is not authorized!',
         code: 401
@@ -52,5 +62,5 @@ module.exports = {
     WRONG_EMAIL_TEMPLATE: {
         message: 'Email template is wrong!',
         code: 5000
-    },
+    }
 };

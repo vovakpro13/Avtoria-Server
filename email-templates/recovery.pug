@@ -1,0 +1,9 @@
+extends index
+block variables
+    - const headerTitle = title
+block content
+    div.welcome-block
+        div
+            | #{ name }, it's your recovery code, please enter it in the form on website.
+        div.code
+            | #{ code }

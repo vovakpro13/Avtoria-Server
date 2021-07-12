@@ -30,6 +30,7 @@ module.exports = {
 
     USER_SECRET_KEYS: [
         'password',
-        'activationCode'
+        'activationCode',
+        'recoveryCode'
     ]
 };

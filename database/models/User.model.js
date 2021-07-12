@@ -43,6 +43,11 @@ const userSchema = new Schema({
         type: String,
         select: false,
         required: true
+    },
+    recoveryCode: {
+        type: Number,
+        select: false,
+        default: 0
     }
 }, {
     timestamps: true,
