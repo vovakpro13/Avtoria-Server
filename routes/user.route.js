@@ -33,9 +33,9 @@ router
 
 router
     .use('/:id', authMiddleWare.checkToken())
-    .put('/:id', userController.updateUserById)
-    .delete('/:id', userController.removeUserById)
     .post('/:id/avatar', userController.addNewAvatars)
-    .delete(':id/avatar/:avatarId', userController.removeAvatarById);
+    .delete('/:id/avatar/:avatarId', userController.removeAvatarById)
+    .put('/:id', userController.updateUserById)
+    .delete('/:id', userController.removeUserById);
 
 module.exports = router;
