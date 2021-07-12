@@ -22,7 +22,7 @@ const {
     passwordHasher,
     dataNormalizators: { userNormalize }
 } = require('../helpers');
-const { dbModels: { User } } = require('../database');
+const { dbModels: { User, Avatar } } = require('../database');
 
 module.exports = {
     getAllUsers: async (req, res, next) => {
@@ -152,6 +152,20 @@ module.exports = {
             res
                 .status(statusCodes.UPDATED)
                 .json({ message: responceMessages.SUCCESS_UPDATED });
+        } catch (err) {
+            next(err);
+        }
+    },
+
+    removeAvatarById: async (req, res, next) => {
+        try {
+            const { params: { id: userId, avatarId } } = req;
+
+            await Avatar.deleteOne(avatarId);
+            await User.findByIdAndUpdate(userId, { $pull: { avatars: { _id: avatarId } } });
+
+            res
+                .status(statusCodes.DELETED).end();
         } catch (err) {
             next(err);
         }

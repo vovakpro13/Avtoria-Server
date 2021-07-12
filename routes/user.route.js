@@ -27,14 +27,15 @@ router
 
 router
     .put('/:id', wareGenerator.chekRequestValid(REQUEST_OBJECTS.BODY, updateUserData))
-    .post('/:id/addAvatars',
+    .post('/:id/avatar',
         fileMiddleware.checkFiles,
         fileMiddleware.maxFilesCount(IMAGES, MAX_AVATAR_UPLOAD_COUNT));
 
 router
     .use('/:id', authMiddleWare.checkToken())
-    .post('/:id/addAvatars', userController.addNewAvatars)
     .put('/:id', userController.updateUserById)
-    .delete('/:id', userController.removeUserById);
+    .delete('/:id', userController.removeUserById)
+    .post('/:id/avatar', userController.addNewAvatars)
+    .delete(':id/avatar/:avatarId', userController.removeAvatarById);
 
 module.exports = router;
