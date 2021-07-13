@@ -162,7 +162,7 @@ module.exports = {
             const { params: { id: userId, avatarId } } = req;
 
             await Avatar.deleteOne({ _id: avatarId });
-            await User.findByIdAndUpdate(userId, { $pull: { avatars: { _id: avatarId } } });
+            await User.updateOne({ _id: userId }, { $pull: { avatars: avatarId } });
 
             res
                 .status(statusCodes.DELETED).end();

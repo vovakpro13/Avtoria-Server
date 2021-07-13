@@ -35,19 +35,6 @@ module.exports = {
             next(e);
         }
     },
-    chekBodyForLogIn: (req, res, next) => {
-        try {
-            const { error } = authValidator.logIn.validate(req.body);
-
-            if (error) {
-                errorsHelper.throwNotValidBody(error);
-            }
-
-            next();
-        } catch (e) {
-            next(e);
-        }
-    },
 
     checkToken: (type = 'access') => async (req, res, next) => {
         try {
