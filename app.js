@@ -6,7 +6,10 @@ const {
     config: { STATIC, PORT },
 } = require('./constants');
 const { errorsHelper } = require('./helpers');
-const { userRouter, authRouter, carRouter } = require('./routes');
+const {
+    userRouter, authRouter, carRouter, mysqlRouter
+} = require('./routes');
+const { sequelize } = require('./database/MySQL');
 
 const app = express();
 
@@ -18,10 +21,19 @@ app.use(fileUpload({}));
 app.use('/users', userRouter);
 app.use('/cars', carRouter);
 app.use('/auth', authRouter);
+app.use('/mysql', mysqlRouter);
 
 app.get('*', errorsHelper.throwRouteNotFound);
 app.use(errorsHelper.handleErrors);
 
-app.listen(PORT, () => {
-    console.log(`Server started on port: ${PORT}`);
-});
+// app.listen(PORT, () => {
+//     console.log(`Server started on port: ${PORT}`);
+// });
+
+(async () => {
+    await sequelize.sync();
+
+    app.listen(PORT, () => {
+        console.log(`Server started on port: ${PORT}`);
+    });
+})();
