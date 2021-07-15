@@ -14,3 +14,4 @@ module.exports.serverEndpoints = require('./server-endpoints');
 module.exports.mimetypes = require('./mimetypes');
 module.exports.carConstants = require('./car');
 module.exports.staticDirNames = require('./static-dir-names');
+module.exports.mySQL = require('./mySQL');

@@ -1,14 +1,12 @@
 const { statusCodes } = require('../constants');
 const { UserModel } = require('../database/MySQL/models');
 
+const { sequelize } = require('../database/MySQL');
+
 module.exports = {
     getStudents: async (req, res, next) => {
         try {
             const users = await UserModel.findAll();
-
-            // destroy, create, update, findByPk, findOne        type: DataTypes.INEGER,
-            //         autoIncrement: true,
-            //         primaryKey: true
 
             res
                 .status(statusCodes.OK)
@@ -34,15 +32,22 @@ module.exports = {
     },
 
     createUser: async (req, res, next) => {
-        try {
-            const { body } = req;
+        const transaction = await sequelize.transaction();
 
-            const createdUser = await UserModel.create(body);
+        try {
+            const { body: { name } } = req;
+
+            const { id } = await UserModel.create({ name }, { transaction });
+
+            const updatedUser = await UserModel.update({ name: `${name}____` }, { where: { id }, transaction });
+
+            await transaction.commit();
 
             res
                 .status(statusCodes.CREATED)
-                .json({ createdUser });
+                .json({ updatedUser });
         } catch (e) {
+            await transaction.rollback();
             next(e);
         }
     },

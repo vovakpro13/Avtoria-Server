@@ -1,6 +1,15 @@
 const { Sequelize } = require('sequelize');
 
-module.exports.sequelize = new Sequelize('feb-2021', 'root', 'root', {
-    dialect: 'mysql',
+const {
+    config: {
+        MYSQL_USER,
+        MYSQL_PASS,
+        MYSQL_DB,
+        MYSQL_DIALECT
+    }
+} = require('../../constants');
+
+module.exports.sequelize = new Sequelize(MYSQL_DB, MYSQL_USER, MYSQL_PASS, {
+    dialect: MYSQL_DIALECT,
     logging: false
 });

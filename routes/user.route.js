@@ -31,11 +31,14 @@ router
         fileMiddleware.checkFiles,
         fileMiddleware.maxFilesCount(IMAGES, MAX_AVATAR_UPLOAD_COUNT));
 
+router.use('/:id/avatar/:avatarId', userMiddleWare.checkIsAvatarExist);
+
 router
     .use('/:id', authMiddleWare.checkToken())
-    .post('/:id/avatar', userController.addNewAvatars)
-    .delete('/:id/avatar/:avatarId', userController.removeAvatarById)
     .put('/:id', userController.updateUserById)
-    .delete('/:id', userController.removeUserById);
+    .delete('/:id', userController.removeUserById)
+    .post('/:id/avatar', userController.addNewAvatars)
+    .patch('/:id/avatar/:avatarId', userController.setMainAvatar)
+    .delete('/:id/avatar/:avatarId', userController.removeAvatarById);
 
 module.exports = router;

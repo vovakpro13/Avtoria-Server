@@ -1,11 +1,4 @@
 const { dbModels: { User } } = require('../database');
-const {
-    ErrorHandler,
-    errorMessages: {
-        RECORD_NOT_FOUND,
-    }
-} = require('../errors');
-const { statusCodes } = require('../constants');
 const { errorsHelper } = require('../helpers');
 
 module.exports = {
@@ -16,11 +9,7 @@ module.exports = {
             const record = await model.findOne({ [dbKey]: value });
 
             if (!record) {
-                throw new ErrorHandler(
-                    statusCodes.NOT_FOUND,
-                    RECORD_NOT_FOUND.message,
-                    RECORD_NOT_FOUND.code
-                );
+                errorsHelper.throwRecordNotFound();
             }
 
             req.record = record;

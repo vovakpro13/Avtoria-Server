@@ -5,7 +5,8 @@ const {
         WRONG_EMAIL_OR_PASSWORD,
         UNAUTHORIZED,
         PERMISSION_DENIED,
-        BIG_FILE_SIZE
+        BIG_FILE_SIZE,
+        RECORD_NOT_FOUND
     }
 } = require('../errors');
 const { statusCodes, errors } = require('../constants');
@@ -34,7 +35,19 @@ module.exports = {
     },
 
     throwUnauthorized() {
-        throw new ErrorHandler(statusCodes.UNAUTHORIZED, UNAUTHORIZED.message, UNAUTHORIZED.code);
+        throw new ErrorHandler(
+            statusCodes.UNAUTHORIZED,
+            UNAUTHORIZED.message,
+            UNAUTHORIZED.code
+        );
+    },
+
+    throwRecordNotFound() {
+        throw new ErrorHandler(
+            statusCodes.NOT_FOUND,
+            RECORD_NOT_FOUND.message,
+            RECORD_NOT_FOUND.code
+        );
     },
 
     throwPermissionDenied() {

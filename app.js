@@ -26,10 +26,6 @@ app.use('/mysql', mysqlRouter);
 app.get('*', errorsHelper.throwRouteNotFound);
 app.use(errorsHelper.handleErrors);
 
-// app.listen(PORT, () => {
-//     console.log(`Server started on port: ${PORT}`);
-// });
-
 (async () => {
     await sequelize.sync();
 

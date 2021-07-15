@@ -157,6 +157,23 @@ module.exports = {
         }
     },
 
+    setMainAvatar: async (req, res, next) => {
+        try {
+            const { avatar } = req;
+
+            await Avatar.updateMany({ user: avatar.user }, { isMain: false });
+
+            avatar.isMain = true;
+            await avatar.save();
+
+            res
+                .status(statusCodes.UPDATED)
+                .json({ mainAvatar: avatar });
+        } catch (err) {
+            next(err);
+        }
+    },
+
     removeAvatarById: async (req, res, next) => {
         try {
             const { params: { id: userId, avatarId } } = req;

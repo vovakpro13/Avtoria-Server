@@ -1,4 +1,4 @@
-const { dbModels: { User } } = require('../database');
+const { dbModels: { User, Avatar } } = require('../database');
 const { ErrorHandler } = require('../errors');
 const { statusCodes } = require('../constants');
 const { errorsHelper } = require('../helpers');
@@ -40,13 +40,31 @@ module.exports = {
         }
     },
 
-    checkUserRole: (roles = []) => async (req, res, next) => {
+    checkUserRole: (roles = []) => (req, res, next) => {
         try {
             const { user } = req;
 
             if (!roles.includes(user.role)) {
                 errorsHelper.throwPermissionDenied();
             }
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    },
+
+    checkIsAvatarExist: async (req, res, next) => {
+        try {
+            const { params: { avatarId } } = req;
+
+            const avatar = await Avatar.findById(avatarId);
+
+            if (!avatar) {
+                errorsHelper.throwRecordNotFound();
+            }
+
+            req.avatar = avatar;
 
             next();
         } catch (err) {

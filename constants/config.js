@@ -32,5 +32,11 @@ module.exports = {
         'password',
         'activationCode',
         'recoveryCode'
-    ]
+    ],
+
+    MYSQL_USER: process.env.MYSQL_USER,
+    MYSQL_PASS: process.env.MYSQL_PASS,
+    MYSQL_DB: process.env.MYSQL_DB,
+    MYSQL_DIALECT: 'mysql',
+    MYSQL_HOST: process.env.MYSQL_HOST || '127.0.0.1',
 };
